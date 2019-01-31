@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Ask and Answered</string>
+    <string name="show_ans_prompt">Tap to show answer</string>
+</resources>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:background="@android:color/black"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity"
+        android:id="@+id/questionLayout">
+
+    <TextView
+            android:id="@+id/categoryText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:textSize="30sp"
+            android:textColor="@android:color/darker_gray"
+            android:fontFamily="sans-serif-smallcaps"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/questionText"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+
+    <TextView
+            android:id="@+id/questionText"
+            android:layout_width="0dp"
+            android:textSize="25sp"
+            android:padding="10dp"
+            android:lineSpacingExtra="3dp"
+            android:textColor="@android:color/darker_gray"
+            android:layout_height="0dp"
+            android:background="@drawable/question_border"
+            android:textAlignment="center"
+            app:layout_constraintTop_toBottomOf="@+id/categoryText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/answerGuide"
+            android:layout_marginStart="9dp"
+            android:layout_marginEnd="9dp"
+            />
+
+    <android.support.constraint.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/answerGuide"
+            app:layout_constraintGuide_percent="0.60"
+            android:orientation="horizontal"/>
+
+
+    <TextView
+            android:id="@+id/answerText"
+            android:layout_width="0dp"
+            android:textSize="25sp"
+            android:padding="10dp"
+            android:lineSpacingExtra="3dp"
+            android:textColor="@android:color/darker_gray"
+            android:text="@string/show_ans_prompt"
+            android:layout_height="0dp"
+            android:background="@drawable/answer_border"
+            android:textAlignment="center"
+            app:layout_constraintTop_toBottomOf="@+id/answerGuide"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/buttonGuide"
+            android:layout_margin="9dp"
+            app:layout_constraintVertical_bias="0.39999998"
+            android:clickable="true"
+            android:onClick="showAnswer"
+            />
+
+    <ImageButton
+            android:id="@+id/flagButton"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:textColor="@android:color/darker_gray"
+            app:layout_constraintTop_toBottomOf="@+id/buttonGuide"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/nextButton"
+            android:src="@android:drawable/ic_delete"
+            android:clickable="true"
+            android:onClick="flagQuestion"/>
+
+    <ImageButton
+            android:id="@+id/nextButton"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:textColor="@android:color/darker_gray"
+            android:src="@android:drawable/ic_media_play"
+            app:layout_constraintTop_toBottomOf="@+id/buttonGuide"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/flagButton"
+            app:layout_constraintVertical_bias="0.0"
+            android:clickable="true"
+            android:onClick="nextQuestion"/>
+
+
+    <android.support.constraint.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonGuide"
+            app:layout_constraintGuide_percent="0.9"
+            android:orientation="horizontal"/>
+
+
+</android.support.constraint.ConstraintLayout>
