@@ -76,8 +76,12 @@ public class MainActivity extends AppCompatActivity {
     class SwipeListnener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            bindNextQuestion();
-            return true;
+            if (e1.getX() > e2.getX()) {
+                bindNextQuestion();
+                return true;
+            }else{
+                return false;
+            }
         }
     }
 }
