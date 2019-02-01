@@ -29,5 +29,5 @@ task clean(type: Delete) {
 ext{
     roomVersion = '1.1.1'
     archLifecycleVersion = '1.1.1'
-    lombokVersion = '1.18.4'
+    lombokVersion = '1.16.20'
 }

@@ -45,19 +45,11 @@ public class MainActivity extends AppCompatActivity {
         return super.onTouchEvent(event);
     }
 
+
     public void showAnswer(View source) {
         if (currentQuestion != null) {
             answerText.setText(currentQuestion.getAnswer());
         }
-    }
-
-    public void nextQuestion(View source) {
-        bindNextQuestion(false);
-    }
-
-    public void flagQuestion(View source) {
-        questionViewModel.flagQuestion(currentQuestion);
-        bindNextQuestion(false);
     }
 
 

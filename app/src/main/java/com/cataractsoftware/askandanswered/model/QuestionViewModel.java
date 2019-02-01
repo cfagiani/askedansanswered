@@ -10,7 +10,7 @@ import java.util.List;
 
 
 public class QuestionViewModel extends AndroidViewModel {
-    private static final int BATCH_SIZE = 200;
+    private static final int BATCH_SIZE = 100;
     private static final int HISTORY_SIZE = 20;
     private static final String LOG_TAG = "QuestionViewModel";
     private final QuestionRepository questionRepository;
