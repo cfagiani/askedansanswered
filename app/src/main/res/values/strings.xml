@@ -1,4 +1,11 @@
 <resources>
-    <string name="app_name">Ask and Answered</string>
+    <string name="app_name">Asked and Answered</string>
     <string name="show_ans_prompt">Tap to show answer</string>
+    <string name="question_source">Question Source</string>
+    <string name="local_q_source">Local Database</string>
+    <string name="jservice_q_source">Jeopardy</string>
+    <string name="settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

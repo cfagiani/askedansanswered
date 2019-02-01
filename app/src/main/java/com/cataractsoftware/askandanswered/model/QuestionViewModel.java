@@ -61,4 +61,10 @@ public class QuestionViewModel extends AndroidViewModel {
 
     }
 
+    public void useLocalSource(boolean useLocal) {
+        if(questionRepository.useLocalSource(useLocal)){
+            questionBatch = questionRepository.getQuestionBatch(BATCH_SIZE);
+        }
+    }
+
 }

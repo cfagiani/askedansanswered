@@ -34,8 +34,19 @@ public class QuestionRepository {
         }
     }
 
-    public void setSource(boolean local) {
-        useLocal = local;
+    /**
+     * Updates the source to local or not. If the value changed, this method returns true. If no change, it returns
+     * false.
+     *
+     * @param local
+     * @return - true if the value changed
+     */
+    public boolean useLocalSource(boolean local) {
+        if (useLocal != local) {
+            useLocal = local;
+            return true;
+        }
+        return false;
     }
 
     private static class insertAsyncTask extends AsyncTask<Question, Void, Void> {

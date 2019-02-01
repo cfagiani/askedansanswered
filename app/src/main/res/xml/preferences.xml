@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+            android:defaultValue="@string/jservice_q_source"
+            android:title="@string/question_source"
+            android:entries="@array/questionSources"
+            android:entryValues="@array/questionSources"
+            android:key="question_source_preference"/>
+</PreferenceScreen>

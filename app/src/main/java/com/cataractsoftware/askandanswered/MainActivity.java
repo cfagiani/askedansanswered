@@ -1,11 +1,12 @@
 package com.cataractsoftware.askandanswered;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-import android.view.View;
+import android.support.v7.widget.Toolbar;
+import android.view.*;
 import android.widget.TextView;
 import com.cataractsoftware.askandanswered.entity.Question;
 import com.cataractsoftware.askandanswered.model.QuestionViewModel;
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView answerText;
     private Question currentQuestion;
     private GestureDetector gestureDetector;
+    private String source;
 
 
     @Override
@@ -33,9 +35,32 @@ public class MainActivity extends AppCompatActivity {
         questionText = findViewById(R.id.questionText);
         answerText = findViewById(R.id.answerText);
         gestureDetector = new GestureDetector(this, new SwipeListnener());
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        setQuestionSourceFromPreferences();
         bindNextQuestion(false);
     }
 
+    @Override
+    protected void onPostResume() {
+        setQuestionSourceFromPreferences();
+        super.onPostResume();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+        return true;
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -65,6 +90,16 @@ public class MainActivity extends AppCompatActivity {
             categoryText.setText(currentQuestion.getCategory());
             questionText.setText(currentQuestion.getText());
             answerText.setText(answerPrompt);
+        }
+    }
+
+    private void setQuestionSourceFromPreferences() {
+        String remoteSource = getResources().getString(R.string.jservice_q_source);
+        source = PreferenceManager.getDefaultSharedPreferences(this).getString(SettingsActivity.SOURCE_KEY, remoteSource);
+        if (source.equals(remoteSource)) {
+            questionViewModel.useLocalSource(false);
+        } else {
+            questionViewModel.useLocalSource(true);
         }
     }
 

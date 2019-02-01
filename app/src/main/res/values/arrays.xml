@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <string-array name="questionSources">
+        <item>@string/jservice_q_source</item>
+        <item>@string/local_q_source</item>
+    </string-array>
+</resources>

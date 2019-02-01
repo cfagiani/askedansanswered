@@ -9,6 +9,13 @@
         tools:context=".MainActivity"
         android:id="@+id/questionLayout">
 
+
+    <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/black"/>
+
     <TextView
             android:id="@+id/categoryText"
             android:layout_width="wrap_content"
@@ -71,7 +78,6 @@
             android:clickable="true"
             android:onClick="showAnswer"
             />
-
 
 
 </android.support.constraint.ConstraintLayout>
