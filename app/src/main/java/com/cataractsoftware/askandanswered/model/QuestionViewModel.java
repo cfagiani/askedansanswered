@@ -11,6 +11,7 @@ import java.util.List;
 
 public class QuestionViewModel extends AndroidViewModel {
     private static final int BATCH_SIZE = 200;
+    private static final int HISTORY_SIZE = 20;
     private static final String LOG_TAG = "QuestionViewModel";
     private final QuestionRepository questionRepository;
     private List<Question> questionBatch;
@@ -19,7 +20,14 @@ public class QuestionViewModel extends AndroidViewModel {
     public QuestionViewModel(Application app) {
         super(app);
         questionRepository = new QuestionRepository(app);
-       questionBatch = questionRepository.getQuestionBatch(BATCH_SIZE);
+        questionBatch = questionRepository.getQuestionBatch(BATCH_SIZE);
+    }
+
+    public Question getPreviousQuestion() {
+        if (currentQuestion > 0 && currentQuestion <= questionBatch.size() && questionBatch.size() > 0) {
+            currentQuestion--;
+        }
+        return questionBatch.get(currentQuestion);
     }
 
     public Question getNextQuestion(boolean markAsSeen) {
@@ -30,12 +38,16 @@ public class QuestionViewModel extends AndroidViewModel {
         }
         currentQuestion++;
         if (questionBatch == null || currentQuestion >= questionBatch.size()) {
-            currentQuestion = 0;
-            questionBatch = questionRepository.getQuestionBatch(BATCH_SIZE);
+            currentQuestion = questionBatch != null ? Math.min(questionBatch.size(), HISTORY_SIZE) : 0;
+            List<Question> nextBatch = questionRepository.getQuestionBatch(BATCH_SIZE);
+            if (questionBatch != null && questionBatch.size() > 0) {
+                nextBatch.addAll(0, questionBatch.subList(Math.max(questionBatch.size() - HISTORY_SIZE, 0), questionBatch.size()));
+            }
+            questionBatch = nextBatch;
         }
         if (currentQuestion < questionBatch.size()) {
             return questionBatch.get(currentQuestion);
-        }else{
+        } else {
             Log.w(LOG_TAG, "Could not get any questions");
             return null;
         }

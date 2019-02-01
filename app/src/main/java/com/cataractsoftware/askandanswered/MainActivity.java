@@ -3,7 +3,6 @@ package com.cataractsoftware.askandanswered;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -34,12 +33,12 @@ public class MainActivity extends AppCompatActivity {
         questionText = findViewById(R.id.questionText);
         answerText = findViewById(R.id.answerText);
         gestureDetector = new GestureDetector(this, new SwipeListnener());
-        bindNextQuestion();
+        bindNextQuestion(false);
     }
 
 
     @Override
-    public boolean onTouchEvent(MotionEvent event){
+    public boolean onTouchEvent(MotionEvent event) {
         if (this.gestureDetector.onTouchEvent(event)) {
             return true;
         }
@@ -53,19 +52,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void nextQuestion(View source) {
-        bindNextQuestion();
+        bindNextQuestion(false);
     }
 
     public void flagQuestion(View source) {
         questionViewModel.flagQuestion(currentQuestion);
-        bindNextQuestion();
+        bindNextQuestion(false);
     }
 
 
-    private void bindNextQuestion() {
+    private void bindNextQuestion(boolean reverse) {
         //if we displayed the answer, then we're seen
         boolean markAsSeen = !answerText.getText().equals(answerPrompt);
-        currentQuestion = questionViewModel.getNextQuestion(markAsSeen);
+        if (reverse) {
+            currentQuestion = questionViewModel.getPreviousQuestion();
+        } else {
+            currentQuestion = questionViewModel.getNextQuestion(markAsSeen);
+        }
         if (currentQuestion != null) {
             categoryText.setText(currentQuestion.getCategory());
             questionText.setText(currentQuestion.getText());
@@ -77,11 +80,11 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
             if (e1.getX() > e2.getX()) {
-                bindNextQuestion();
-                return true;
-            }else{
-                return false;
+                bindNextQuestion(false);
+            } else {
+                bindNextQuestion(true);
             }
+            return true;
         }
     }
 }
