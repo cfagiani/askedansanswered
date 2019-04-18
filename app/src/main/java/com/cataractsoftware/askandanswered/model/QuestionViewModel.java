@@ -2,6 +2,8 @@ package com.cataractsoftware.askandanswered.model;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
+import android.arch.lifecycle.MutableLiveData;
+import android.os.AsyncTask;
 import android.util.Log;
 import com.cataractsoftware.askandanswered.entity.Question;
 import com.cataractsoftware.askandanswered.repository.QuestionRepository;
@@ -15,43 +17,69 @@ public class QuestionViewModel extends AndroidViewModel {
     private static final String LOG_TAG = "QuestionViewModel";
     private final QuestionRepository questionRepository;
     private List<Question> questionBatch;
-    private int currentQuestion = -1;
+    private MutableLiveData<Question> currentQuestion;
+    private int currentQuestionIndex = -1;
+    private volatile boolean loading = false;
 
     public QuestionViewModel(Application app) {
         super(app);
         questionRepository = new QuestionRepository(app);
-        questionBatch = questionRepository.getQuestionBatch(BATCH_SIZE);
+        loadQuestionBatch();
     }
 
-    public Question getPreviousQuestion() {
-        if (currentQuestion > 0 && currentQuestion <= questionBatch.size() && questionBatch.size() > 0) {
-            currentQuestion--;
+    public MutableLiveData<Question> getCurrentQuestion() {
+        if (currentQuestion == null) {
+            currentQuestion = new MutableLiveData<>();
         }
-        return questionBatch.get(currentQuestion);
+        return currentQuestion;
     }
 
-    public Question getNextQuestion(boolean markAsSeen) {
-        if (questionBatch != null && currentQuestion >= 0 && markAsSeen) {
-            Question q = questionBatch.get(currentQuestion);
+    public void getPreviousQuestion() {
+        if (currentQuestionIndex > 0 && currentQuestionIndex <= questionBatch.size() && questionBatch.size() > 0) {
+            currentQuestionIndex--;
+        }
+        getCurrentQuestion().setValue(questionBatch.get(currentQuestionIndex));
+    }
+
+    public void getNextQuestion(boolean markAsSeen) {
+        if (questionBatch != null && currentQuestionIndex >= 0 && markAsSeen) {
+            Question q = questionBatch.get(currentQuestionIndex);
             q.setLastSeen(System.currentTimeMillis());
             questionRepository.update(q);
         }
-        currentQuestion++;
-        if (questionBatch == null || currentQuestion >= questionBatch.size()) {
-            currentQuestion = questionBatch != null ? Math.min(questionBatch.size(), HISTORY_SIZE) : 0;
-            List<Question> nextBatch = questionRepository.getQuestionBatch(BATCH_SIZE);
-            if (questionBatch != null && questionBatch.size() > 0) {
-                nextBatch.addAll(0, questionBatch.subList(Math.max(questionBatch.size() - HISTORY_SIZE, 0), questionBatch.size()));
-            }
-            questionBatch = nextBatch;
-        }
-        if (currentQuestion < questionBatch.size()) {
-            return questionBatch.get(currentQuestion);
+        currentQuestionIndex++;
+        if (questionBatch == null || currentQuestionIndex >= questionBatch.size()) {
+            loadQuestionBatch();
+        } else if (currentQuestionIndex < questionBatch.size()) {
+            getCurrentQuestion().setValue(questionBatch.get(currentQuestionIndex));
         } else {
             Log.w(LOG_TAG, "Could not get any questions");
-            return null;
         }
     }
+
+    private void loadQuestionBatch() {
+        if (!loading) {
+            loading = true;
+            new AsyncTask<Void, Void, List<Question>>() {
+                @Override
+                protected List<Question> doInBackground(Void... voids) {
+                    return questionRepository.getQuestionBatch(BATCH_SIZE);
+                }
+
+                @Override
+                protected void onPostExecute(List<Question> data) {
+                    if (questionBatch != null && questionBatch.size() > 0) {
+                        data.addAll(0, questionBatch.subList(Math.max(questionBatch.size() - HISTORY_SIZE, 0), questionBatch.size()));
+                    }
+                    questionBatch = data;
+                    currentQuestionIndex = questionBatch != null ? Math.min(questionBatch.size(), HISTORY_SIZE) : 0;
+                    getCurrentQuestion().postValue(questionBatch.get(currentQuestionIndex));
+                    loading = false;
+                }
+            }.execute();
+        }
+    }
+
 
     public void flagQuestion(Question q) {
         if (q != null) {
@@ -62,7 +90,7 @@ public class QuestionViewModel extends AndroidViewModel {
     }
 
     public void useLocalSource(boolean useLocal) {
-        if(questionRepository.useLocalSource(useLocal)){
+        if (questionRepository.useLocalSource(useLocal)) {
             questionBatch = questionRepository.getQuestionBatch(BATCH_SIZE);
         }
     }

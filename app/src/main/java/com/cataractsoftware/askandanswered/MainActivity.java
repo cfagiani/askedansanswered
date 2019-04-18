@@ -39,6 +39,15 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         setQuestionSourceFromPreferences();
+        questionViewModel.getCurrentQuestion().observe(this, (question)-> {
+            if (question != null) {
+                currentQuestion = question;
+                categoryText.setText(currentQuestion.getCategory());
+                questionText.setText(currentQuestion.getText());
+                answerText.setText(answerPrompt);
+            }
+        });
+
         bindNextQuestion(false);
     }
 
@@ -70,6 +79,15 @@ public class MainActivity extends AppCompatActivity {
         return super.onTouchEvent(event);
     }
 
+    // this is needed to allow us to propagate the gestures even if the user swipes on the answer view
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event){
+        if (this.gestureDetector.onTouchEvent(event)) {
+            return true;
+        }
+        return super.dispatchTouchEvent(event);
+    }
+
 
     public void showAnswer(View source) {
         if (currentQuestion != null) {
@@ -82,14 +100,9 @@ public class MainActivity extends AppCompatActivity {
         //if we displayed the answer, then we're seen
         boolean markAsSeen = !answerText.getText().equals(answerPrompt);
         if (reverse) {
-            currentQuestion = questionViewModel.getPreviousQuestion();
+            questionViewModel.getPreviousQuestion();
         } else {
-            currentQuestion = questionViewModel.getNextQuestion(markAsSeen);
-        }
-        if (currentQuestion != null) {
-            categoryText.setText(currentQuestion.getCategory());
-            questionText.setText(currentQuestion.getText());
-            answerText.setText(answerPrompt);
+            questionViewModel.getNextQuestion(markAsSeen);
         }
     }
 

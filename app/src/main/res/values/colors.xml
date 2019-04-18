@@ -3,7 +3,7 @@
     <color name="colorPrimary">#757575</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#40c3ff</color>
-    <color name="questionBorderColor">#FF0000</color>
-    <color name="answerBorderColor">#ffea00</color>
+    <color name="questionBorderColor">#2e3233</color>
+    <color name="answerBorderColor">#26324a</color>
 
 </resources>
