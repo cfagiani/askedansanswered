@@ -5,18 +5,18 @@ import android.os.AsyncTask;
 import com.cataractsoftware.askandanswered.dao.QuestionDao;
 import com.cataractsoftware.askandanswered.db.QuestionDatabase;
 import com.cataractsoftware.askandanswered.entity.Question;
-import com.cataractsoftware.askandanswered.rest.JServiceClient;
+import com.cataractsoftware.askandanswered.rest.CluebaseClient;
 
 import java.util.List;
 
 public class QuestionRepository {
     private final QuestionDao questionDao;
-    private final JServiceClient jServiceClient;
+    private final CluebaseClient cluebaseClient;
     private boolean useLocal = false;
 
     public QuestionRepository(Application app) {
         QuestionDatabase db = QuestionDatabase.getDatabase(app);
-        jServiceClient = new JServiceClient(app);
+        cluebaseClient = new CluebaseClient(app);
         questionDao = db.questionDao();
     }
 
@@ -30,7 +30,7 @@ public class QuestionRepository {
         if (useLocal) {
             return questionDao.getQuestionBatch(batchSize);
         } else {
-            return jServiceClient.getQuestionBatch(batchSize);
+            return cluebaseClient.getQuestionBatch(batchSize);
         }
     }
 
